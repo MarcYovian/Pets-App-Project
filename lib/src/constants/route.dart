@@ -7,3 +7,4 @@ const String homeScreen = '/home';
 const String chatScreen = '/chat';
 const String myPetsScreen = '/my-pets';
 const String addPetsScreen = '/my-pets/add';
+const String myProfileScreen = '/my-profile';
