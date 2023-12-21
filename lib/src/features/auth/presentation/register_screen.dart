@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -31,32 +30,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       try {
         // create user
-        await authService
-            .signUpWithEmailAndPassword(
-          emailController.text.trim(),
-          passwordController.text.trim(),
-        )
-            .then((value) {
-          final database = FirebaseFirestore.instance;
+        await authService.signUpWithEmailAndPassword(
+          emailController.text,
+          passwordController.text,
+          nameController.text,
+          numberController.text,
+          ageController.text,
+        );
 
-          database.collection("users").doc("${value.user!.uid}").set({
-            "full name": nameController.text,
-            "phone number": numberController.text,
-            "email": emailController.text,
-            "age": ageController.text,
-            "created": DateTime.now(),
-          }).onError((error, stackTrace) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  error.toString(),
-                ),
-              ),
-            );
-          });
-        }).then((value) {
-          Navigator.pushNamed(context, authGate);
-        });
+        Navigator.pushNamed(
+          context,
+          authGate,
+        );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
