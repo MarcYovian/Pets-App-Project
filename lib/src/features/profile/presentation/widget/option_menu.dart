@@ -20,7 +20,7 @@ class OptionMenu extends StatelessWidget {
         children: [
           Icon(
             iconData,
-            size: 50,
+            size: 40,
             color: Colors.black54,
           ),
           const Gap(20),

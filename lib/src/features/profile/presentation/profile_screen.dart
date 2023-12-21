@@ -91,7 +91,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           Container(
-            margin: const EdgeInsets.symmetric(horizontal: 20),
+            margin: const EdgeInsets.symmetric(horizontal: 30),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -99,8 +99,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     // My Profile
                     OptionMenu(
-                      onTap: () {},
-                      iconData: Icons.person_outline_rounded,
+                      onTap: () {
+                        Navigator.pushNamed(context, myProfileScreen);
+                      },
+                      iconData: Icons.person,
                       menuName: "My Profile",
                     ),
                     const Gap(10),
@@ -116,7 +118,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     // Notifications
                     OptionMenu(
                       onTap: () {},
-                      iconData: Icons.notifications_none,
+                      iconData: Icons.notifications,
                       menuName: "Notifications",
                     ),
                     const Gap(10),
