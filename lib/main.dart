@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey),
         useMaterial3: true,
       ),
-      initialRoute: welcomeScreen,
+      initialRoute: authGate,
     );
   }
 }

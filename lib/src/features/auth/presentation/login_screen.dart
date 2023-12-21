@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pets_shop/src/common_widgets/my_button.dart';
 import 'package:pets_shop/src/common_widgets/my_text_field.dart';
+import 'package:pets_shop/src/constants/route.dart';
 import 'package:pets_shop/src/features/auth/application/auth_service.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
         emailController.text,
         passwordController.text,
       );
+      Navigator.pushNamed(context, authGate);
     } catch (e) {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
