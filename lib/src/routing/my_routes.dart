@@ -16,9 +16,7 @@ class MyRoutes {
   static List pages = [
     const HomeScreen(),
     const Center(child: Text("Page 2")),
-    const Center(child: Text("Page 3")),
     const ChatListScreen(),
-    // const Center(child: Text("Page 3")),
     const ProfileScreen(),
   ];
 

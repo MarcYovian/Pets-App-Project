@@ -1,6 +1,6 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:pets_shop/src/routing/my_routes.dart';
+import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
 class MyBottomNavigationBar extends StatefulWidget {
   const MyBottomNavigationBar({super.key});
@@ -24,18 +24,43 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: pages.elementAtOrNull(selectedIndex),
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.grey.shade300,
-        animationDuration: const Duration(milliseconds: 400),
-        items: const [
-          Icon(Icons.home),
-          Icon(Icons.favorite),
-          Icon(Icons.add),
-          Icon(Icons.chat),
-          Icon(Icons.person),
+      bottomNavigationBar: SalomonBottomBar(
+        backgroundColor: Colors.black,
+        items: [
+          // home
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.home),
+            title: const Text("Home"),
+            selectedColor: Colors.amber,
+            unselectedColor: Colors.white,
+          ),
+
+          // home
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.favorite),
+            title: const Text("Favorites"),
+            selectedColor: Colors.amber,
+            unselectedColor: Colors.white,
+          ),
+
+          // chat
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.chat),
+            title: const Text("Chat"),
+            selectedColor: Colors.amber,
+            unselectedColor: Colors.white,
+          ),
+
+          // profile
+          SalomonBottomBarItem(
+            icon: const Icon(Icons.person),
+            title: const Text("Profile"),
+            selectedColor: Colors.amber,
+            unselectedColor: Colors.white,
+          ),
         ],
+        currentIndex: selectedIndex,
         onTap: onTap,
-        index: selectedIndex,
       ),
     );
   }

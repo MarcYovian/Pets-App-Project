@@ -21,6 +21,17 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         title: const Center(
           child: Text("My Profile"),
         ),
+        actions: [
+          GestureDetector(
+            onTap: () {
+              print("edit boy");
+            },
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 15),
+              child: const Icon(Icons.edit),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -46,14 +57,36 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               return Column(
                 children: [
                   Center(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(60),
-                      child: Image.network(
-                        profileData['image'],
-                        height: 120,
-                        width: 120,
-                        fit: BoxFit.fill,
-                      ),
+                    child: Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(60),
+                          child: Image.network(
+                            profileData['image'],
+                            height: 120,
+                            width: 120,
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(60),
+                                color: Colors.black,
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt_outlined,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const Gap(70),
