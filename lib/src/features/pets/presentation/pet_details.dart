@@ -44,8 +44,6 @@ class _PetDetailsState extends State<PetDetails> {
                 return const CircularProgressIndicator();
               }
 
-              print(snapshot.data!.exists);
-
               return IconButton(
                 onPressed: () {
                   if (snapshot.data!.exists) {

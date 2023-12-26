@@ -9,13 +9,14 @@ import 'package:pets_shop/src/features/chat/presentation/chat_screen.dart';
 import 'package:pets_shop/src/features/home/presentation/home_screen.dart';
 import 'package:pets_shop/src/features/my_profile/presentation/my_profile_screen.dart';
 import 'package:pets_shop/src/features/pets/presentation/create_pets_screen.dart';
+import 'package:pets_shop/src/features/pets/presentation/favorite_pets.dart';
 import 'package:pets_shop/src/features/pets/presentation/my_pets_screen.dart';
 import 'package:pets_shop/src/features/profile/presentation/profile_screen.dart';
 
 class MyRoutes {
   static List pages = [
     const HomeScreen(),
-    const Center(child: Text("Page 2")),
+    const FavoritePets(),
     const ChatListScreen(),
     const ProfileScreen(),
   ];

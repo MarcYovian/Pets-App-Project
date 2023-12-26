@@ -80,22 +80,6 @@ class PetsService {
         .delete();
   }
 
-  // bool isFavoritePet(String petId){
-  //   var currentUid = _firebaseAuth.currentUser!.uid;
-
-  //   var doc = _firebaseFirestore
-  //       .collection('users')
-  //       .doc(currentUid)
-  //       .collection('favorite_pet')
-  //       .doc(petId)
-  //       .snapshots();
-  //   if (await doc.isEmpty) {
-  //     return false;
-  //   }
-
-  //   return true;
-  // }
-
   // get favorite pet data
   Stream<QuerySnapshot> getFavoritePetData() {
     var currentUid = _firebaseAuth.currentUser!.uid;
