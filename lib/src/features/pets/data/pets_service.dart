@@ -56,29 +56,54 @@ class PetsService {
     return _firebaseFirestore.collection('pets_data').doc(petId).snapshots();
   }
 
-  // Future<List<Pets>> getAllPetsByCurrentUser() async {
-  //   final String currentUserId = _firebaseAuth.currentUser!.uid;
-  //   // Query to get all pets of the current user
-  //   QuerySnapshot querySnapshot = await _firebaseFirestore
+  // Send Favorite pet data
+  Future<void> sendFavoritePetData(String petId, Pets pet) async {
+    var currentUid = _firebaseAuth.currentUser!.uid;
+
+    // send data to database
+    await _firebaseFirestore
+        .collection('users')
+        .doc(currentUid)
+        .collection('favorite_pet')
+        .doc(petId)
+        .set(pet.toMap());
+  }
+
+  Future<void> removeFavoritePetData(String petId) async {
+    var currentUid = _firebaseAuth.currentUser!.uid;
+
+    await _firebaseFirestore
+        .collection('users')
+        .doc(currentUid)
+        .collection('favorite_pet')
+        .doc(petId)
+        .delete();
+  }
+
+  // bool isFavoritePet(String petId){
+  //   var currentUid = _firebaseAuth.currentUser!.uid;
+
+  //   var doc = _firebaseFirestore
   //       .collection('users')
-  //       .doc(currentUserId)
-  //       .collection('pets')
-  //       .get();
-
-  //   List<Pets> petsList = [];
-
-  //   for (var doc in querySnapshot.docs) {
-  //     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
-  //     DocumentSnapshot<Map<String, dynamic>> petDataSnapshot =
-  //         await _firebaseFirestore
-  //             .collection('pets_data')
-  //             .doc(data['uid pet'])
-  //             .get();
-  //     Pets pet = Pets.fromMap(petDataSnapshot.data() as Map<String, dynamic>);
-  //     petsList.add(pet);
+  //       .doc(currentUid)
+  //       .collection('favorite_pet')
+  //       .doc(petId)
+  //       .snapshots();
+  //   if (await doc.isEmpty) {
+  //     return false;
   //   }
 
-  //   return petsList;
+  //   return true;
   // }
+
+  // get favorite pet data
+  Stream<QuerySnapshot> getFavoritePetData() {
+    var currentUid = _firebaseAuth.currentUser!.uid;
+
+    return _firebaseFirestore
+        .collection('users')
+        .doc(currentUid)
+        .collection('favorite_pet')
+        .snapshots();
+  }
 }
