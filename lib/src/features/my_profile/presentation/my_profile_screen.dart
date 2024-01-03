@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pets_shop/src/features/my_profile/data/my_profile_service.dart';
 import 'package:pets_shop/src/features/my_profile/presentation/widget/detail_text_field.dart';
+import 'package:pets_shop/src/features/profile/domain/profile_model.dart';
 
 class MyProfileScreen extends StatefulWidget {
   const MyProfileScreen({super.key});
@@ -22,15 +23,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
           child: Text("My Profile"),
         ),
         actions: [
-          GestureDetector(
-            onTap: () {
-              print("edit boy");
-            },
+          InkWell(
+            borderRadius: BorderRadius.circular(60),
+            onTap: () {},
             child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 15),
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(50),
+              ),
               child: const Icon(Icons.edit),
             ),
           ),
+          const Gap(10),
         ],
       ),
       body: SingleChildScrollView(
@@ -51,9 +56,10 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   child: CircularProgressIndicator(),
                 );
               }
-              Map<String, dynamic> profileData =
-                  snapshot.data!.docs.first.data() as Map<String, dynamic>;
-
+              print(snapshot.data!.docs.first.data() as Map<String, dynamic>);
+              ProfileModel profileData = ProfileModel.fromMap(
+                  snapshot.data!.docs.first.data() as Map<String, dynamic>);
+              // print(profileData.toMap());
               return Column(
                 children: [
                   Center(
@@ -62,7 +68,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(60),
                           child: Image.network(
-                            profileData['image'],
+                            profileData.image,
                             height: 120,
                             width: 120,
                             fit: BoxFit.fill,
@@ -94,35 +100,35 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   // Full Name
                   DetailTextField(
                     title: "Full Name",
-                    value: profileData['full name'] ?? "",
+                    value: profileData.fullName,
                   ),
                   const Gap(20),
 
                   // email
                   DetailTextField(
                     title: "Email",
-                    value: profileData['email'] ?? "",
+                    value: profileData.email,
                   ),
                   const Gap(20),
 
                   // Phone Number
                   DetailTextField(
                     title: "Phone Number",
-                    value: profileData['phone number'] ?? "",
+                    value: profileData.phoneNumber,
                   ),
                   const Gap(20),
 
                   // Age
                   DetailTextField(
                     title: "Age",
-                    value: profileData['age'],
+                    value: profileData.age.toString(),
                   ),
                   const Gap(20),
 
                   // address
                   DetailTextField(
                     title: "Address",
-                    value: profileData['address'] ?? "",
+                    value: profileData.address,
                   ),
                   const Gap(20),
                 ],
