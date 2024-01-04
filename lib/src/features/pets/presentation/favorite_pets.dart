@@ -60,7 +60,7 @@ class _FavoritePetsState extends State<FavoritePets> {
                       DocumentSnapshot document = snapshot.data!.docs[index];
                       Pets pet =
                           Pets.fromMap(document.data() as Map<String, dynamic>);
-
+                      print(pet);
                       return _buildPetDataItem(petId, pet);
                     },
                   );

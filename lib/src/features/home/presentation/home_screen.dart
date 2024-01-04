@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pets_shop/src/constants/route.dart';
 import 'package:pets_shop/src/features/home/application/home_service.dart';
 import 'package:pets_shop/src/features/pets/domain/pets_model.dart';
 import 'package:pets_shop/src/features/pets/presentation/pet_details.dart';
+import 'package:pets_shop/src/features/profile/domain/profile_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -15,111 +17,111 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  TextEditingController searchController = TextEditingController();
+
+  final HomeService _homeService = HomeService();
+
+  searchData(String value) {}
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey.shade300,
-      appBar: AppBar(
-        title: _auth.currentUser == null
-            ? const Text("Hello guest")
-            : StreamBuilder(
-                stream: HomeService().getUserData(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Text("Error: ${snapshot.error}");
-                  }
+    return StreamBuilder(
+        stream: _homeService.getUserData(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("Error: ${snapshot.error}");
+          }
 
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
-                  }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-                  return Text(snapshot.data!['full name']);
-                },
-              ),
-        actions: [
-          const Icon(Icons.notifications),
-          const Gap(10),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, myProfileScreen);
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(60),
-              child: _auth.currentUser == null
-                  ? networkImage(
-                      "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-                    )
-                  : StreamBuilder(
-                      stream: HomeService().getUserData(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text("Error: ${snapshot.error}");
-                        }
-
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const CircularProgressIndicator();
-                        }
-
-                        return networkImage(snapshot.data!['image']);
+          ProfileModel profile = ProfileModel.fromMap(
+              snapshot.data!.data() as Map<String, dynamic>);
+          return Scaffold(
+            backgroundColor: Colors.grey.shade300,
+            appBar: AppBar(
+              title: Text(profile.fullName),
+              actions: [
+                const Icon(Icons.notifications),
+                const Gap(10),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(context, myProfileScreen);
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(60),
+                    child: networkImage(profile.image),
+                  ),
+                ),
+                const Gap(15),
+              ],
+              automaticallyImplyLeading: false,
+            ),
+            body: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 10),
+                    child: CupertinoSearchTextField(
+                      placeholder: "Search",
+                      controller: searchController,
+                      onChanged: (value) {
+                        print(value);
                       },
                     ),
-            ),
-          ),
-          const Gap(15),
-        ],
-        automaticallyImplyLeading: false,
-      ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            const Center(
-              child: Text("for Category"),
-            ),
-            const Gap(10),
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: StreamBuilder(
-                  stream: HomeService().getAllPetsWithoutCurrentUser(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text("error : ${snapshot.error}"),
-                      );
-                    }
+                  ),
+                  const Center(
+                    child: Text("for Category"),
+                  ),
+                  const Gap(10),
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      height: MediaQuery.of(context).size.height,
+                      width: MediaQuery.of(context).size.width,
+                      child: StreamBuilder(
+                        stream: _homeService.getAllPetsWithoutCurrentUser(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text("error : ${snapshot.error}"),
+                            );
+                          }
 
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.vertical,
-                      itemCount: snapshot.data!.docs.length,
-                      itemBuilder: (context, index) {
-                        String petId = snapshot.data!.docs[index].id;
-                        DocumentSnapshot document = snapshot.data!.docs[index];
-                        Pets pet = Pets.fromMap(
-                            document.data() as Map<String, dynamic>);
-                        return _buildPetDataItem(petId, pet);
-                      },
-                    );
-                  },
-                ),
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          return ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (context, index) {
+                              String petId = snapshot.data!.docs[index].id;
+                              DocumentSnapshot document =
+                                  snapshot.data!.docs[index];
+                              Pets pet = Pets.fromMap(
+                                  document.data() as Map<String, dynamic>);
+                              return _buildPetDataItem(petId, pet);
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 
   Widget _buildPetDataItem(String petId, Pets pet) {
@@ -148,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.network(
-                  pet.imagePath!,
+                  pet.imagePath,
                   width: MediaQuery.of(context).size.width,
                   height: 100,
                   fit: BoxFit.cover,
@@ -162,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(pet.name!),
+                  Text(pet.name),
                 ],
               ),
             ),

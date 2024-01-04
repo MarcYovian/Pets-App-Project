@@ -28,10 +28,6 @@ class MyRoutes {
         return MaterialPageRoute(
           builder: (context) => const WelcomeScreen(),
         );
-      // case splashScreen:
-      //   return MaterialPageRoute(
-      //     builder: (context) => const SplashScreen(),
-      //   );
       case authGate:
         return MaterialPageRoute(
           builder: (context) => const AuthGate(),
