@@ -151,7 +151,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     print(_allSearchPetsData);
     return Scaffold(
-      backgroundColor: Colors.grey.shade300,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(profile?.fullName ?? "null"),
         actions: [
@@ -176,7 +176,15 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           children: [
             // Search Field
-            const Text("Search For A Pet"),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: const Text(
+                    "Search For A Pet",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  )),
+            ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: TextField(
@@ -229,11 +237,16 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: GestureDetector(
               onTap: () => handleCategorySelection(category),
-              child: Chip(
-                label: Text(category),
-                backgroundColor: _selectedCategory == category
-                    ? Colors.blue
-                    : Colors.grey.shade300,
+              child: Column(
+                children: [
+                  // Icon(CupertinoIcons.cat)
+                  Chip(
+                    label: Text(category),
+                    backgroundColor: _selectedCategory == category
+                        ? Colors.blue
+                        : Colors.grey.shade300,
+                  ),
+                ],
               ),
             ),
           );
@@ -255,41 +268,56 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(10),
-        margin: const EdgeInsets.all(5),
+        // padding: const EdgeInsets.all(10),
+        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: Colors.amber,
+          color: Colors.white,
+          boxShadow: const [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.25),
+              blurRadius: 5,
+              offset: Offset(0, 4),
+            )
+          ],
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              flex: 1,
+              flex: 2,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.network(
                   pet.imagePath,
                   width: MediaQuery.of(context).size.width,
-                  height: 100,
+                  height: 125,
                   fit: BoxFit.cover,
                 ),
               ),
             ),
             const Gap(20),
             Expanded(
-              flex: 2,
+              flex: 3,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    pet.name,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        pet.name,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(onPressed: () {}, icon: Icon(Icons.favorite))
+                    ],
                   ),
                   Text(pet.category),
+                  Text("${pet.gender}, ${pet.age} months old"),
                 ],
               ),
             ),
