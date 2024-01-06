@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pets_shop/src/features/profile/domain/profile_model.dart';
 
 class AuthService extends ChangeNotifier {
   // instance of auth
@@ -30,8 +31,9 @@ class AuthService extends ChangeNotifier {
     String email,
     String password,
     String fullName,
-    String phone,
-    String age,
+    String phoneNumber,
+    String address,
+    int age,
   ) async {
     try {
       UserCredential userCredential =
@@ -40,17 +42,24 @@ class AuthService extends ChangeNotifier {
         password: password,
       );
 
-      // create a new document for the user in the user collection
-      _firestore.collection('users').doc(userCredential.user!.uid).set({
-        "uid": userCredential.user!.uid,
-        "full name": fullName,
-        "phone number": phone,
-        "email": email,
-        "age": age,
-        "image":
+      ProfileModel profile = ProfileModel(
+        uid: userCredential.user!.uid,
+        fullName: fullName,
+        email: email,
+        phoneNumber: phoneNumber,
+        age: age,
+        address: address,
+        image:
             "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png",
-        "created": DateTime.now(),
-      });
+        createdAt: Timestamp.now(),
+        updatedAt: Timestamp.now(),
+      );
+
+      // create a new document for the user in the user collection
+      _firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .set(profile.toMap());
       return userCredential;
     } catch (e) {
       throw Exception(e);

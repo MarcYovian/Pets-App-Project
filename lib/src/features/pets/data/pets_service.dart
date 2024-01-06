@@ -81,13 +81,13 @@ class PetsService {
   }
 
   // get favorite pet data
-  Stream<QuerySnapshot> getFavoritePetData() {
+  Future<QuerySnapshot> getFavoritePetData() {
     var currentUid = _firebaseAuth.currentUser!.uid;
 
     return _firebaseFirestore
         .collection('users')
         .doc(currentUid)
         .collection('favorite_pet')
-        .snapshots();
+        .get();
   }
 }

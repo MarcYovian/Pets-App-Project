@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pets_shop/src/features/pets/data/pets_service.dart';
@@ -14,6 +13,26 @@ class FavoritePets extends StatefulWidget {
 
 class _FavoritePetsState extends State<FavoritePets> {
   final PetsService _petsService = PetsService();
+
+  List<Pets> petsData = [];
+  List<String> petsIdData = [];
+
+  @override
+  void initState() {
+    // todo
+    getFavoriteDataStream();
+    super.initState();
+  }
+
+  getFavoriteDataStream() async {
+    var data = await _petsService.getFavoritePetData();
+    setState(() {
+      petsData = data.docs
+          .map((e) => Pets.fromMap(e.data() as Map<String, dynamic>))
+          .toList();
+      petsIdData = data.docs.map((e) => e.id).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,36 +55,16 @@ class _FavoritePetsState extends State<FavoritePets> {
                   child: Text("Buat category"),
                 ),
               ),
-              StreamBuilder(
-                stream: _petsService.getFavoritePetData(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text("Error : ${snapshot.error}"),
-                    );
-                  }
-
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.vertical,
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder: (context, index) {
-                      String petId = snapshot.data!.docs[index].id;
-                      DocumentSnapshot document = snapshot.data!.docs[index];
-                      Pets pet =
-                          Pets.fromMap(document.data() as Map<String, dynamic>);
-                      print(pet);
-                      return _buildPetDataItem(petId, pet);
-                    },
-                  );
+              ListView.builder(
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: petsData.length,
+                itemBuilder: (context, index) {
+                  String petId = petsIdData[index];
+                  Pets pet = petsData[index];
+                  return _buildPetDataItem(petId, pet);
                 },
-              ),
+              )
             ],
           ),
         ),
@@ -98,7 +97,7 @@ class _FavoritePetsState extends State<FavoritePets> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: Image.network(
-                  pet.imagePath!,
+                  pet.imagePath,
                   width: MediaQuery.of(context).size.width,
                   height: 100,
                   fit: BoxFit.cover,
@@ -112,7 +111,7 @@ class _FavoritePetsState extends State<FavoritePets> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(pet.name!),
+                  Text(pet.name),
                 ],
               ),
             ),

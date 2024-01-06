@@ -70,6 +70,8 @@ class _ChatScreenState extends State<ChatScreen> {
           return const Text("Waiting");
         }
 
+        print(snapshot);
+
         return ListView(
           children: snapshot.data!.docs
               .map((document) => _buildMessageItem(document))

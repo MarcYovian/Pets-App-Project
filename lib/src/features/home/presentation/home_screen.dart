@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pets_shop/src/constants/route.dart';
 import 'package:pets_shop/src/features/home/application/home_service.dart';
+import 'package:pets_shop/src/features/pets/data/categories_repository.dart';
 import 'package:pets_shop/src/features/pets/domain/pets_model.dart';
 import 'package:pets_shop/src/features/pets/presentation/pet_details.dart';
 import 'package:pets_shop/src/features/profile/domain/profile_model.dart';
@@ -17,111 +18,228 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  TextEditingController searchController = TextEditingController();
-
+  final TextEditingController searchController = TextEditingController();
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final HomeService _homeService = HomeService();
+  final List<String> _categories = [
+    'All',
+    'Dog',
+    'Bird',
+    'Cat',
+    'Hamsters',
+    'Fish',
+    'Rabbit',
+  ];
+  String _selectedCategory = "All";
+  ProfileModel? profile;
 
-  searchData(String value) {}
+  Map<String, dynamic> petData = {};
+
+  List<Pets> _allDataPets = [];
+  List<String> _allIdDataPets = [];
+  List<Pets> _allSearchPetsData = [];
+  List<String> _allSearchIdPetsData = [];
+
+  @override
+  void initState() {
+    getClientStream();
+    getPetStream();
+    Future.delayed(const Duration(milliseconds: 1000));
+    searchController.addListener(_onSearchChanged);
+    super.initState();
+  }
+
+  void _onSearchChanged() {
+    searchResultList();
+  }
+
+  searchResultList() {
+    var showResults = [];
+    var showResultsId = [];
+
+    if (searchController.text != "") {
+      for (var i = 0; i < _allDataPets.length; i++) {
+        var name = _allDataPets[i].name.toLowerCase();
+        var category = _allDataPets[i].category.toLowerCase();
+        var search = searchController.text.toLowerCase();
+        if (name.contains(search) || category.contains(search)) {
+          showResults.add(_allDataPets[i]);
+          showResultsId.add(_allIdDataPets[i]);
+        }
+      }
+    } else {
+      showResults = List.from(_allDataPets);
+      showResultsId = List.from(_allIdDataPets);
+    }
+
+    setState(() {
+      _allSearchPetsData = List.from(showResults);
+      _allSearchIdPetsData = List.from(showResultsId);
+    });
+  }
+
+  filterPetsByCategory(String category) {
+    var showResults = [];
+    var showResultsId = [];
+
+    if (_selectedCategory != "All") {
+      for (var i = 0; i < _allDataPets.length; i++) {
+        var categoryPet = _allDataPets[i].category;
+        if (categoryPet.contains(category)) {
+          showResults.add(_allDataPets[i]);
+          showResultsId.add(_allIdDataPets[i]);
+        }
+      }
+    } else {
+      showResults = List.from(_allDataPets);
+      showResultsId = List.from(_allIdDataPets);
+    }
+
+    setState(() {
+      _allSearchPetsData = List.from(showResults);
+      _allSearchIdPetsData = List.from(showResultsId);
+    });
+  }
+
+  handleCategorySelection(String category) {
+    setState(() {
+      _selectedCategory = category;
+    });
+
+    filterPetsByCategory(category);
+  }
+
+  getClientStream() async {
+    try {
+      var dataUser = await _homeService.getUserData();
+
+      setState(() {
+        profile = ProfileModel.fromMap(dataUser.data() as Map<String, dynamic>);
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  getPetStream() async {
+    try {
+      await _homeService.getAllPetsWithoutCurrentUser().then((value) {
+        setState(() {
+          _allIdDataPets = value['id'] as List<String>;
+          _allDataPets = value['data'] as List<Pets>;
+        });
+      });
+      filterPetsByCategory(_selectedCategory);
+      searchResultList();
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void dispose() {
+    searchController.removeListener(_onSearchChanged);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-        stream: _homeService.getUserData(),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return Text("Error: ${snapshot.error}");
-          }
+    // if (_allDataPets.isEmpty || _allIdDataPets.isEmpty) {
+    //   return const Scaffold();
+    // }
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          ProfileModel profile = ProfileModel.fromMap(
-              snapshot.data!.data() as Map<String, dynamic>);
-          return Scaffold(
-            backgroundColor: Colors.grey.shade300,
-            appBar: AppBar(
-              title: Text(profile.fullName),
-              actions: [
-                const Icon(Icons.notifications),
-                const Gap(10),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.pushNamed(context, myProfileScreen);
-                  },
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(60),
-                    child: networkImage(profile.image),
-                  ),
-                ),
-                const Gap(15),
-              ],
-              automaticallyImplyLeading: false,
+    print(_allSearchPetsData);
+    return Scaffold(
+      backgroundColor: Colors.grey.shade300,
+      appBar: AppBar(
+        title: Text(profile?.fullName ?? "null"),
+        actions: [
+          const Icon(Icons.notifications),
+          const Gap(10),
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, myProfileScreen);
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(60),
+              child: networkImage(profile?.image ??
+                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"),
             ),
-            body: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    child: CupertinoSearchTextField(
-                      placeholder: "Search",
-                      controller: searchController,
-                      onChanged: (value) {
-                        print(value);
-                      },
-                    ),
-                  ),
-                  const Center(
-                    child: Text("for Category"),
-                  ),
-                  const Gap(10),
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 10),
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
-                      child: StreamBuilder(
-                        stream: _homeService.getAllPetsWithoutCurrentUser(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return Center(
-                              child: Text("error : ${snapshot.error}"),
-                            );
-                          }
+          ),
+          const Gap(15),
+        ],
+        automaticallyImplyLeading: false,
+      ),
+      body: SizedBox(
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            // Search Field
+            const Text("Search For A Pet"),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              child: TextField(
+                controller: searchController,
+                decoration: const InputDecoration(
+                  hintText: "Search",
+                ),
+              ),
+            ),
 
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                          return ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            itemCount: snapshot.data!.docs.length,
-                            itemBuilder: (context, index) {
-                              String petId = snapshot.data!.docs[index].id;
-                              DocumentSnapshot document =
-                                  snapshot.data!.docs[index];
-                              Pets pet = Pets.fromMap(
-                                  document.data() as Map<String, dynamic>);
-                              return _buildPetDataItem(petId, pet);
-                            },
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ],
+            // Category
+            _buildCategoryList(),
+
+            // list view of pets
+            const Gap(10),
+            Expanded(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                height: MediaQuery.of(context).size.height,
+                width: MediaQuery.of(context).size.width,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.vertical,
+                  itemCount: _allSearchPetsData.length,
+                  itemBuilder: (context, index) {
+                    var petId = _allSearchIdPetsData[index];
+                    var pet = _allSearchPetsData[index];
+
+                    return _buildPetDataItem(petId, pet);
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buildCategoryList() {
+    return SizedBox(
+      height: 40,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: _categories.length,
+        itemBuilder: (context, index) {
+          var category = _categories[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: GestureDetector(
+              onTap: () => handleCategorySelection(category),
+              child: Chip(
+                label: Text(category),
+                backgroundColor: _selectedCategory == category
+                    ? Colors.blue
+                    : Colors.grey.shade300,
               ),
             ),
           );
-        });
+        },
+      ),
+    );
   }
 
   Widget _buildPetDataItem(String petId, Pets pet) {
@@ -164,7 +282,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(pet.name),
+                  Text(
+                    pet.name,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(pet.category),
                 ],
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:pets_shop/src/common_widgets/my_bottom_navbar.dart';
 import 'package:pets_shop/src/constants/route.dart';
 import 'package:pets_shop/src/features/pets/data/pets_service.dart';
 
@@ -16,6 +17,18 @@ class _MyPetsScreenState extends State<MyPetsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    const MyBottomNavigationBar(selectedIndex: 3),
+              ),
+            );
+          },
+          child: const Icon(Icons.arrow_back_ios_new_rounded),
+        ),
         title: const Center(
           child: Text("My Pets"),
         ),

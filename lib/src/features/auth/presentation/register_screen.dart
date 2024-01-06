@@ -19,6 +19,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final nameController = TextEditingController();
   final numberController = TextEditingController();
   final emailController = TextEditingController();
+  final addressController = TextEditingController();
   final ageController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -35,7 +36,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
           passwordController.text,
           nameController.text,
           numberController.text,
-          ageController.text,
+          addressController.text,
+          int.parse(ageController.text),
         );
 
         Navigator.pushNamed(
@@ -157,6 +159,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   MyTextField(
                     controller: emailController,
                     hintText: "Email",
+                    obscureText: false,
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                  const Gap(10),
+
+                  // email text field
+                  MyTextField(
+                    controller: addressController,
+                    hintText: "Address",
                     obscureText: false,
                     keyboardType: TextInputType.emailAddress,
                   ),

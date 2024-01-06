@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:pets_shop/src/constants/route.dart';
 import 'package:pets_shop/src/features/auth/application/auth_service.dart';
 import 'package:pets_shop/src/features/profile/data/profile_service.dart';
+import 'package:pets_shop/src/features/profile/domain/profile_model.dart';
 import 'package:pets_shop/src/features/profile/presentation/widget/option_menu.dart';
 import 'package:provider/provider.dart';
 
@@ -53,15 +54,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   );
                 }
 
-                Map<String, dynamic> profileData =
-                    snapshot.data!.docs.first.data() as Map<String, dynamic>;
+                ProfileModel profile = ProfileModel.fromMap(
+                    snapshot.data!.docs.first.data() as Map<String, dynamic>);
 
                 return Row(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(60),
                       child: Image.network(
-                        profileData['image'],
+                        profile.image,
                         height: 80,
                         width: 80,
                         fit: BoxFit.fill,
@@ -73,7 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          profileData['full name'],
+                          profile.fullName,
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 20,
@@ -81,7 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         const Gap(10),
                         Text(
-                          profileData['email'],
+                          profile.email,
                         ),
                       ],
                     ),

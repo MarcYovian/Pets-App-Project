@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ProfileModel {
   final String uid;
   final String fullName;
@@ -9,7 +11,8 @@ class ProfileModel {
   final int age;
   final String address;
   final String image;
-
+  Timestamp? createdAt;
+  Timestamp? updatedAt;
   ProfileModel({
     required this.uid,
     required this.fullName,
@@ -18,6 +21,8 @@ class ProfileModel {
     required this.age,
     required this.address,
     required this.image,
+    this.createdAt,
+    this.updatedAt,
   });
 
   ProfileModel copyWith({
@@ -28,6 +33,8 @@ class ProfileModel {
     int? age,
     String? address,
     String? image,
+    Timestamp? createdAt,
+    Timestamp? updatedAt,
   }) {
     return ProfileModel(
       uid: uid ?? this.uid,
@@ -37,6 +44,8 @@ class ProfileModel {
       age: age ?? this.age,
       address: address ?? this.address,
       image: image ?? this.image,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -49,18 +58,22 @@ class ProfileModel {
       'age': age,
       'address': address,
       'image': image,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 
-  static ProfileModel fromMap(Map<String, dynamic> map) {
+  factory ProfileModel.fromMap(Map<String, dynamic> map) {
     return ProfileModel(
-      uid: map['uid'],
-      fullName: map['full name'],
-      email: map['email'],
-      phoneNumber: map['phone number'],
-      age: map['age'],
-      address: map['address'],
-      image: map['image'],
+      uid: map['uid'] as String,
+      fullName: map['fullName'] as String,
+      email: map['email'] as String,
+      phoneNumber: map['phoneNumber'] as String,
+      age: map['age'] as int,
+      address: map['address'] as String,
+      image: map['image'] as String,
+      createdAt: map['createdAt'],
+      updatedAt: map['updatedAt'],
     );
   }
 
@@ -71,7 +84,7 @@ class ProfileModel {
 
   @override
   String toString() {
-    return 'ProfileModel(uid: $uid, fullName: $fullName, email: $email, phoneNumber: $phoneNumber, age: $age, address: $address, image: $image)';
+    return 'ProfileModel(uid: $uid, fullName: $fullName, email: $email, phoneNumber: $phoneNumber, age: $age, address: $address, image: $image, createdAt: $createdAt, updatedAt: $updatedAt)';
   }
 
   @override
@@ -84,7 +97,9 @@ class ProfileModel {
         other.phoneNumber == phoneNumber &&
         other.age == age &&
         other.address == address &&
-        other.image == image;
+        other.image == image &&
+        other.createdAt == createdAt &&
+        other.updatedAt == updatedAt;
   }
 
   @override
@@ -95,6 +110,8 @@ class ProfileModel {
         phoneNumber.hashCode ^
         age.hashCode ^
         address.hashCode ^
-        image.hashCode;
+        image.hashCode ^
+        createdAt.hashCode ^
+        updatedAt.hashCode;
   }
 }
