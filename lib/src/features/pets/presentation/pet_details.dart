@@ -35,7 +35,7 @@ class _PetDetailsState extends State<PetDetails> {
       appBar: AppBar(
         actions: [
           StreamBuilder(
-            stream: _checkIsFavorite(),
+            stream: _petsService.checkIsFavorite(widget.petId),
             builder: (context, snapshot) {
               if (snapshot.hasError) {
                 return const Text("error");

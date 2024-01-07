@@ -3,9 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:pets_shop/src/common_widgets/my_card.dart';
 import 'package:pets_shop/src/constants/route.dart';
 import 'package:pets_shop/src/features/home/application/home_service.dart';
 import 'package:pets_shop/src/features/pets/data/categories_repository.dart';
+import 'package:pets_shop/src/features/pets/data/pets_service.dart';
 import 'package:pets_shop/src/features/pets/domain/pets_model.dart';
 import 'package:pets_shop/src/features/pets/presentation/pet_details.dart';
 import 'package:pets_shop/src/features/profile/domain/profile_model.dart';
@@ -153,7 +155,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(profile?.fullName ?? "null"),
+        title: Text(
+          profile?.fullName ?? "null",
+          style: TextStyle(),
+        ),
         actions: [
           const Icon(Icons.notifications),
           const Gap(10),
@@ -256,6 +261,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildPetDataItem(String petId, Pets pet) {
+    PetsService().checkIsFavorite(petId).any((element) {
+      if (element.exists) {
+        print(element);
+        return true;
+      } else {
+        print("nothing");
+        return false;
+      }
+    });
+
     return InkWell(
       radius: 10,
       onTap: () {
@@ -266,64 +281,43 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         );
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        // padding: const EdgeInsets.all(10),
-        margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 15),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: Colors.white,
-          boxShadow: const [
-            BoxShadow(
-              color: Color.fromRGBO(0, 0, 0, 0.25),
-              blurRadius: 5,
-              offset: Offset(0, 4),
-            )
-          ],
-        ),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 2,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image.network(
-                  pet.imagePath,
-                  width: MediaQuery.of(context).size.width,
-                  height: 125,
-                  fit: BoxFit.cover,
-                ),
+      child: StreamBuilder(
+          stream: PetsService().checkIsFavorite(petId),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Text("error");
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+            return MyCard(
+              pet: pet,
+              icon: Icon(
+                snapshot.data!.exists ? Icons.favorite : Icons.favorite_border,
               ),
-            ),
-            const Gap(20),
-            Expanded(
-              flex: 3,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        pet.name,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      IconButton(onPressed: () {}, icon: Icon(Icons.favorite))
-                    ],
-                  ),
-                  Text(pet.category),
-                  Text("${pet.gender}, ${pet.age} months old"),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+              onPressed: () {
+                if (snapshot.data!.exists) {
+                  PetsService().removeFavoritePetData(petId);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Pet data was remove from favorites!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else {
+                  PetsService().sendFavoritePetData(petId, pet);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content:
+                          Text('Pet data was successfully add to favorites!'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                }
+              },
+            );
+          }),
     );
   }
 

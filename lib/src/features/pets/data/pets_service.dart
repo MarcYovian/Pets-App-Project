@@ -90,4 +90,13 @@ class PetsService {
         .collection('favorite_pet')
         .get();
   }
+
+  Stream<DocumentSnapshot<Map<String, dynamic>>> checkIsFavorite(String petId) {
+    return _firebaseFirestore
+        .collection('users')
+        .doc(_firebaseAuth.currentUser!.uid)
+        .collection('favorite_pet')
+        .doc(petId)
+        .snapshots();
+  }
 }

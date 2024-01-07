@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:pets_shop/src/common_widgets/my_card.dart';
 import 'package:pets_shop/src/features/pets/data/pets_service.dart';
 import 'package:pets_shop/src/features/pets/domain/pets_model.dart';
 import 'package:pets_shop/src/features/pets/presentation/pet_details.dart';
@@ -47,25 +48,15 @@ class _FavoritePetsState extends State<FavoritePets> {
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 75,
-                child: Center(
-                  child: Text("Buat category"),
-                ),
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                itemCount: petsData.length,
-                itemBuilder: (context, index) {
-                  String petId = petsIdData[index];
-                  Pets pet = petsData[index];
-                  return _buildPetDataItem(petId, pet);
-                },
-              )
-            ],
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.vertical,
+            itemCount: petsData.length,
+            itemBuilder: (context, index) {
+              String petId = petsIdData[index];
+              Pets pet = petsData[index];
+              return _buildPetDataItem(petId, pet);
+            },
           ),
         ),
       ),
@@ -82,41 +73,9 @@ class _FavoritePetsState extends State<FavoritePets> {
           ),
         );
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: const EdgeInsets.all(10),
-        margin: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(15),
-          color: Colors.amber,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 1,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image.network(
-                  pet.imagePath,
-                  width: MediaQuery.of(context).size.width,
-                  height: 100,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            const Gap(20),
-            Expanded(
-              flex: 2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(pet.name),
-                ],
-              ),
-            ),
-          ],
-        ),
+      child: MyCard(
+        pet: pet,
+        icon: Icon(Icons.favorite),
       ),
     );
   }
