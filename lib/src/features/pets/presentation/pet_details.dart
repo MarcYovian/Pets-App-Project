@@ -32,78 +32,123 @@ class _PetDetailsState extends State<PetDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          StreamBuilder(
-            stream: _petsService.checkIsFavorite(widget.petId),
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const Text("error");
-              }
+      // appBar: AppBar(
+      //   actions: [
+      //     StreamBuilder(
+      //       stream: _petsService.checkIsFavorite(widget.petId),
+      //       builder: (context, snapshot) {
+      //         if (snapshot.hasError) {
+      //           return const Text("error");
+      //         }
 
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              }
+      //         if (snapshot.connectionState == ConnectionState.waiting) {
+      //           return const CircularProgressIndicator();
+      //         }
 
-              return IconButton(
-                onPressed: () {
-                  if (snapshot.data!.exists) {
-                    _petsService.removeFavoritePetData(widget.petId);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Pet data was remove from favorites!'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  } else {
-                    _petsService.sendFavoritePetData(widget.petId, widget.pet);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content:
-                            Text('Pet data was successfully add to favorites!'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                  }
-                },
-                icon: Icon(
-                  snapshot.data!.exists
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+      //         return IconButton(
+      //           onPressed: () {
+      //             if (snapshot.data!.exists) {
+      //               _petsService.removeFavoritePetData(widget.petId);
+      //               ScaffoldMessenger.of(context).showSnackBar(
+      //                 const SnackBar(
+      //                   content: Text('Pet data was remove from favorites!'),
+      //                   backgroundColor: Colors.green,
+      //                 ),
+      //               );
+      //             } else {
+      //               _petsService.sendFavoritePetData(widget.petId, widget.pet);
+      //               ScaffoldMessenger.of(context).showSnackBar(
+      //                 const SnackBar(
+      //                   content:
+      //                       Text('Pet data was successfully add to favorites!'),
+      //                   backgroundColor: Colors.green,
+      //                 ),
+      //               );
+      //             }
+      //           },
+      //           icon: Icon(
+      //             snapshot.data!.exists
+      //                 ? Icons.favorite
+      //                 : Icons.favorite_border,
+      //           ),
+      //         );
+      //       },
+      //     ),
+      //   ],
+      // ),
       body: SizedBox(
         height: MediaQuery.of(context).size.height,
         child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(
-              children: [
-                Image.network(
-                  widget.pet.imagePath!,
-                  width: MediaQuery.of(context).size.width,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height / 9,
-                  padding: const EdgeInsets.all(10),
-                  color: Colors.amber,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      MyButton(onTap: () {}, text: "Chat"),
-                      MyButton(onTap: () {}, text: "Checkout"),
-                    ],
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  Image.network(
+                    widget.pet.imagePath!,
+                    width: MediaQuery.of(context).size.width,
+                    height: 300,
+                    fit: BoxFit.cover,
                   ),
-                )
-              ],
-            ),
+                  Container(
+                    height: MediaQuery.of(context).size.height / 13,
+                    // color: Colors.amber,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.chevron_left_outlined,
+                            size: 40,
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Icons.favorite,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+
+              // Name n price
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.pet.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                    Text("Rp ${widget.pet.price.toString()}"),
+                  ],
+                ),
+              ),
+
+              // Age, Gender, Category
+
+              // CTA Button
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height / 9,
+                padding: const EdgeInsets.all(10),
+                color: Colors.amber,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    MyButton(onTap: () {}, text: "Chat"),
+                    MyButton(onTap: () {}, text: "Checkout"),
+                  ],
+                ),
+              )
+            ],
           ),
         ),
       ),
