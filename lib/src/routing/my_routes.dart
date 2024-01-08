@@ -7,6 +7,7 @@ import 'package:pets_shop/src/features/auth/presentation/welcome_screen.dart';
 import 'package:pets_shop/src/features/chat/domain/chat_model.dart';
 import 'package:pets_shop/src/features/chat/presentation/chat_list_screen.dart';
 import 'package:pets_shop/src/features/chat/presentation/chat_screen.dart';
+import 'package:pets_shop/src/features/checkout/presentation/checkout_screen.dart';
 import 'package:pets_shop/src/features/home/presentation/home_screen.dart';
 import 'package:pets_shop/src/features/my_profile/presentation/my_profile_screen.dart';
 import 'package:pets_shop/src/features/pets/presentation/create_pets_screen.dart';
@@ -69,6 +70,14 @@ class MyRoutes {
       case myProfileScreen:
         return MaterialPageRoute(
           builder: (context) => const MyProfileScreen(),
+        );
+      case checkoutScreen:
+        return MaterialPageRoute(
+          builder: (context) => CheckoutScreen(
+            petId: arg!['petId'],
+            pet: arg['pet'],
+            profile: arg['profile'],
+          ),
         );
       default:
     }
