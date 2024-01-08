@@ -102,6 +102,7 @@ class _PetDetailsState extends State<PetDetails> {
                       children: [
                         IconButton(
                           onPressed: () {
+                            print("Tes");
                             Navigator.pop(context);
                           },
                           icon: const Icon(
@@ -169,30 +170,17 @@ class _PetDetailsState extends State<PetDetails> {
                       widget.pet.name,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 24,
+                        fontSize: 30,
                       ),
                     ),
-                    Text("Rp ${widget.pet.price.toString()}"),
+                    Text(
+                      "Rp ${widget.pet.price.toString()}",
+                      style: TextStyle(fontSize: 18),
+                    ),
                   ],
                 ),
               ),
-
-              // Category
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                width: MediaQuery.of(context).size.width,
-                child: Text(
-                  widget.pet.category,
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w300,
-                    color: Colors.grey.shade500,
-                  ),
-                ),
-              ),
-              const Gap(20),
-
+              Gap(18),
               // Age, Gender, Category
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -204,6 +192,10 @@ class _PetDetailsState extends State<PetDetails> {
                   SmallBox(
                     title: "Gender",
                     value: widget.pet.gender,
+                  ),
+                  SmallBox(
+                    title: "Type",
+                    value: widget.pet.category,
                   ),
                 ],
               ),
@@ -233,7 +225,7 @@ class _PetDetailsState extends State<PetDetails> {
                   return Stack(
                     children: [
                       Container(
-                        margin: const EdgeInsets.only(left: 50),
+                        margin: const EdgeInsets.only(left: 40),
                         padding: const EdgeInsets.only(left: 60),
                         height: 100,
                         width: MediaQuery.of(context).size.width,
@@ -301,19 +293,44 @@ class _PetDetailsState extends State<PetDetails> {
               const Gap(20),
 
               // CTA Button
-              // Container(
-              //   width: MediaQuery.of(context).size.width,
-              //   height: MediaQuery.of(context).size.height / 9,
-              //   padding: const EdgeInsets.all(10),
-              //   color: Colors.amber,
-              //   child: Row(
-              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //     children: [
-              //       MyButton(onTap: () {}, text: "Chat"),
-              //       MyButton(onTap: () {}, text: "Checkout"),
-              //     ],
-              //   ),
-              // )
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height / 9,
+                padding: const EdgeInsets.all(10),
+                // color: Colors.amber,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    InkWell(
+                      onTap: () {},
+                      child: Icon(Icons.chat, color: Colors.amber),
+                    ),
+                    InkWell(
+                      onTap: () {},
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Colors.pink,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.pets,
+                              color: Colors.white,
+                            ),
+                            Text(
+                              "Adoption",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
