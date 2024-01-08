@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pets_shop/src/common_widgets/my_bottom_navbar.dart';
 import 'package:pets_shop/src/constants/route.dart';
 import 'package:pets_shop/src/features/auth/application/auth_gate.dart';
 import 'package:pets_shop/src/features/auth/application/loginOrRegister.dart';
@@ -10,7 +11,7 @@ import 'package:pets_shop/src/features/home/presentation/home_screen.dart';
 import 'package:pets_shop/src/features/my_profile/presentation/my_profile_screen.dart';
 import 'package:pets_shop/src/features/pets/presentation/create_pets_screen.dart';
 import 'package:pets_shop/src/features/pets/presentation/favorite_pets.dart';
-import 'package:pets_shop/src/features/pets/presentation/my_pets_screen.dart';
+import 'package:pets_shop/src/features/pets/presentation/widget/my_pets.dart';
 import 'package:pets_shop/src/features/profile/presentation/profile_screen.dart';
 
 class MyRoutes {
@@ -22,7 +23,7 @@ class MyRoutes {
   ];
 
   static Route<dynamic> generateRoute(RouteSettings setting) {
-    final arg = setting.arguments as Chat?;
+    final arg = setting.arguments as Map<String, dynamic>?;
     switch (setting.name) {
       case welcomeScreen:
         return MaterialPageRoute(
@@ -40,6 +41,12 @@ class MyRoutes {
         return MaterialPageRoute(
           builder: (context) => const LoginOrRegister(isLoginPage: false),
         );
+      case bottomNavScreen:
+        return MaterialPageRoute(
+          builder: (context) => MyBottomNavigationBar(
+            index: arg!['index'],
+          ),
+        );
       case homeScreen:
         return MaterialPageRoute(
           builder: (context) => const AuthGate(),
@@ -47,12 +54,13 @@ class MyRoutes {
       case chatScreen:
         return MaterialPageRoute(
           builder: (context) => ChatScreen(
-              receivedUserEmail: arg!.receivedUserEmail,
-              receiverUserId: arg.receiverUserId),
+            receivedUserEmail: arg!['receivedUserEmail'],
+            receiverUserId: arg['receiverUserId'],
+          ),
         );
       case myPetsScreen:
         return MaterialPageRoute(
-          builder: (context) => const MyPetsScreen(),
+          builder: (context) => const MyPets(),
         );
       case addPetsScreen:
         return MaterialPageRoute(
