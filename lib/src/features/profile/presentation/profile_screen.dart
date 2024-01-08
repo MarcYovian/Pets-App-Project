@@ -109,20 +109,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const Gap(10),
 
                     // Settings
-                    OptionMenu(
-                      onTap: () {},
-                      iconData: Icons.settings,
-                      menuName: "Settings",
-                    ),
-                    const Gap(10),
+                    // OptionMenu(
+                    //   onTap: () {},
+                    //   iconData: Icons.settings,
+                    //   menuName: "Settings",
+                    // ),
+                    // const Gap(10),
 
                     // Notifications
-                    OptionMenu(
-                      onTap: () {},
-                      iconData: Icons.notifications,
-                      menuName: "Notifications",
-                    ),
-                    const Gap(10),
+                    // OptionMenu(
+                    //   onTap: () {},
+                    //   iconData: Icons.notifications,
+                    //   menuName: "Notifications",
+                    // ),
+                    // const Gap(10),
 
                     // My Pets
                     OptionMenu(

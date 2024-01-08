@@ -10,3 +10,4 @@ const String addPetsScreen = '/my-pets/add';
 const String myProfileScreen = '/my-profile';
 const String favoriteScreen = '/favorite';
 const String bottomNavScreen = "/bottom";
+const String checkoutScreen = "/checkout";
