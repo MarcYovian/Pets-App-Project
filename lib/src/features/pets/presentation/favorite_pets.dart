@@ -75,7 +75,6 @@ class _FavoritePetsState extends State<FavoritePets> {
       },
       child: MyCard(
         pet: pet,
-        icon: Icon(Icons.favorite),
       ),
     );
   }

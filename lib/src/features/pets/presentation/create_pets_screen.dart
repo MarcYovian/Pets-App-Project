@@ -237,8 +237,7 @@ class _CreatePetsScreenState extends State<CreatePetsScreen> {
       Reference referenceImageToUpload = referenceDireImages.child(imageName);
       final metadata = SettableMetadata(contentType: "image/jpeg");
 
-      final uploadTask =
-          referenceImageToUpload.putFile(File(imageFile!.path), metadata);
+      final uploadTask = referenceImageToUpload.putFile(File(imageFile!.path));
 
       await uploadTask; // Wait for the upload to complete
 

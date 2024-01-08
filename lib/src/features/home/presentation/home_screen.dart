@@ -183,9 +183,9 @@ class _HomeScreenState extends State<HomeScreen> {
             // Search Field
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Align(
+              child: const Align(
                   alignment: Alignment.centerLeft,
-                  child: const Text(
+                  child: Text(
                     "Search For A Pet",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   )),
@@ -232,7 +232,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   _buildCategoryList() {
     return SizedBox(
-      height: 40,
+      height: 50,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _categories.length,
@@ -261,64 +261,19 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildPetDataItem(String petId, Pets pet) {
-    PetsService().checkIsFavorite(petId).any((element) {
-      if (element.exists) {
-        print(element);
-        return true;
-      } else {
-        print("nothing");
-        return false;
-      }
-    });
-
     return InkWell(
-      radius: 10,
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PetDetails(petId: petId, pet: pet),
-          ),
-        );
-      },
-      child: StreamBuilder(
-          stream: PetsService().checkIsFavorite(petId),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const Text("error");
-            }
-
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            }
-            return MyCard(
-              pet: pet,
-              icon: Icon(
-                snapshot.data!.exists ? Icons.favorite : Icons.favorite_border,
-              ),
-              onPressed: () {
-                if (snapshot.data!.exists) {
-                  PetsService().removeFavoritePetData(petId);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Pet data was remove from favorites!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                } else {
-                  PetsService().sendFavoritePetData(petId, pet);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content:
-                          Text('Pet data was successfully add to favorites!'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                }
-              },
-            );
-          }),
-    );
+        radius: 10,
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PetDetails(petId: petId, pet: pet),
+            ),
+          );
+        },
+        child: MyCard(
+          pet: pet,
+        ));
   }
 
   Widget networkImage(String path) {

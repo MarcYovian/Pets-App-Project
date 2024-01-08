@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:pets_shop/src/common_widgets/my_button.dart';
 import 'package:pets_shop/src/features/pets/data/pets_service.dart';
 import 'package:pets_shop/src/features/pets/domain/pets_model.dart';
@@ -37,39 +38,39 @@ class _PetDetailsState extends State<PetDetails> {
       //     StreamBuilder(
       //       stream: _petsService.checkIsFavorite(widget.petId),
       //       builder: (context, snapshot) {
-      //         if (snapshot.hasError) {
-      //           return const Text("error");
-      //         }
+      // if (snapshot.hasError) {
+      //   return const Text("error");
+      // }
 
-      //         if (snapshot.connectionState == ConnectionState.waiting) {
-      //           return const CircularProgressIndicator();
-      //         }
+      // if (snapshot.connectionState == ConnectionState.waiting) {
+      //   return const CircularProgressIndicator();
+      // }
 
       //         return IconButton(
       //           onPressed: () {
-      //             if (snapshot.data!.exists) {
-      //               _petsService.removeFavoritePetData(widget.petId);
-      //               ScaffoldMessenger.of(context).showSnackBar(
-      //                 const SnackBar(
-      //                   content: Text('Pet data was remove from favorites!'),
-      //                   backgroundColor: Colors.green,
-      //                 ),
-      //               );
-      //             } else {
-      //               _petsService.sendFavoritePetData(widget.petId, widget.pet);
-      //               ScaffoldMessenger.of(context).showSnackBar(
-      //                 const SnackBar(
-      //                   content:
-      //                       Text('Pet data was successfully add to favorites!'),
-      //                   backgroundColor: Colors.green,
-      //                 ),
-      //               );
-      //             }
+      // if (snapshot.data!.exists) {
+      //   _petsService.removeFavoritePetData(widget.petId);
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(
+      //       content: Text('Pet data was remove from favorites!'),
+      //       backgroundColor: Colors.green,
+      //     ),
+      //   );
+      // } else {
+      //   _petsService.sendFavoritePetData(widget.petId, widget.pet);
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(
+      //       content:
+      //           Text('Pet data was successfully add to favorites!'),
+      //       backgroundColor: Colors.green,
+      //     ),
+      //   );
+      // }
       //           },
       //           icon: Icon(
-      //             snapshot.data!.exists
-      //                 ? Icons.favorite
-      //                 : Icons.favorite_border,
+      // snapshot.data!.exists
+      //     ? Icons.favorite
+      //     : Icons.favorite_border,
       //           ),
       //         );
       //       },
@@ -84,29 +85,73 @@ class _PetDetailsState extends State<PetDetails> {
               Stack(
                 children: [
                   Image.network(
-                    widget.pet.imagePath!,
+                    widget.pet.imagePath,
                     width: MediaQuery.of(context).size.width,
                     height: 300,
                     fit: BoxFit.cover,
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height / 13,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 20,
+                    ),
                     // color: Colors.amber,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                           icon: const Icon(
                             Icons.chevron_left_outlined,
                             size: 40,
                           ),
                         ),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            Icons.favorite,
-                          ),
+                        StreamBuilder(
+                          stream: _petsService.checkIsFavorite(widget.petId),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasError) {
+                              return const Text("error");
+                            }
+
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            }
+
+                            return IconButton(
+                              onPressed: () {
+                                if (snapshot.data!.exists) {
+                                  _petsService
+                                      .removeFavoritePetData(widget.petId);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Pet data was remove from favorites!'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+                                } else {
+                                  _petsService.sendFavoritePetData(
+                                      widget.petId, widget.pet);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Pet data was successfully add to favorites!'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+                                }
+                              },
+                              icon: Icon(
+                                snapshot.data!.exists
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),
@@ -132,25 +177,188 @@ class _PetDetailsState extends State<PetDetails> {
                 ),
               ),
 
-              // Age, Gender, Category
+              // Category
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  widget.pet.category,
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w300,
+                    color: Colors.grey.shade500,
+                  ),
+                ),
+              ),
+              const Gap(20),
 
-              // CTA Button
+              // Age, Gender, Category
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  SmallBox(
+                    title: "Age",
+                    value: widget.pet.age.toString(),
+                  ),
+                  SmallBox(
+                    title: "Gender",
+                    value: widget.pet.gender,
+                  ),
+                ],
+              ),
+              const Gap(30),
+
+              // Owner
+              StreamBuilder(
+                stream: _firebaseFirestore
+                    .collection("users")
+                    .doc(widget.pet.userUid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text("Error"),
+                    );
+                  }
+
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+
+                  var data = snapshot.data!.data();
+
+                  return Stack(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 50),
+                        padding: const EdgeInsets.only(left: 60),
+                        height: 100,
+                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            bottomLeft: Radius.circular(30),
+                          ),
+                          color: Colors.amber.shade100,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              data!['fullName'].toString(),
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 22,
+                              ),
+                            ),
+                            const Text(
+                              "Owner",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
+                                color: Colors.pink,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25, top: 20),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(60),
+                          child: Image.network(
+                            data['image'],
+                            width: 55,
+                            height: 55,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const Gap(20),
+
+              // Description
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 9,
-                padding: const EdgeInsets.all(10),
-                color: Colors.amber,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    MyButton(onTap: () {}, text: "Chat"),
-                    MyButton(onTap: () {}, text: "Checkout"),
-                  ],
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
                 ),
-              )
+                child: Text(
+                  widget.pet.description,
+                  // "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras imperdiet est ac elit gravida sollicitudin. Aenean vestibulum, augue quis malesuada eleifend, leo risus iaculis ligula, sed imperdiet leo felis non est. Duis convallis enim nec nisi malesuada, eu gravida lacus pulvinar. Proin ut bibendum turpis. Pellentesque congue quam nibh, at molestie dolor pretium id. Aenean quis mauris sed lorem cursus bibendum. Aliquam pretium aliquet ipsum, a aliquet ipsum vulputate eget. Phasellus nec massa non turpis semper scelerisque at sed leo. Praesent ac nulla ut lectus sagittis luctus. Suspendisse dapibus diam at risus aliquam, feugiat iaculis turpis ultricies. Quisque elit turpis, commodo at lorem at, dignissim pretium turpis.",
+                  textAlign: TextAlign.left,
+                  softWrap: true,
+                ),
+              ),
+              const Gap(20),
+
+              // CTA Button
+              // Container(
+              //   width: MediaQuery.of(context).size.width,
+              //   height: MediaQuery.of(context).size.height / 9,
+              //   padding: const EdgeInsets.all(10),
+              //   color: Colors.amber,
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //     children: [
+              //       MyButton(onTap: () {}, text: "Chat"),
+              //       MyButton(onTap: () {}, text: "Checkout"),
+              //     ],
+              //   ),
+              // )
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class SmallBox extends StatelessWidget {
+  final String title;
+  final String value;
+  const SmallBox({
+    super.key,
+    required this.title,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 80,
+      height: 80,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Colors.grey.shade300,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            "Age",
+            style: TextStyle(
+              color: Colors.pink.shade300,
+              fontSize: 18,
+            ),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.black,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
       ),
     );
   }
