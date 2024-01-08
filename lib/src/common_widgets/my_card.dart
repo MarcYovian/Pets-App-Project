@@ -5,10 +5,10 @@ import 'package:pets_shop/src/features/pets/domain/pets_model.dart';
 
 class MyCard extends StatefulWidget {
   final Pets pet;
-  final void Function()? onPressed;
-  final Widget icon;
-  const MyCard(
-      {super.key, required this.pet, this.onPressed, required this.icon});
+  const MyCard({
+    super.key,
+    required this.pet,
+  });
 
   @override
   State<MyCard> createState() => _MyCardState();
@@ -53,21 +53,12 @@ class _MyCardState extends State<MyCard> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.pet.name,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: widget.onPressed,
-                      icon: widget.icon,
-                    ),
-                  ],
+                Text(
+                  widget.pet.name,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(widget.pet.category),
                 Text("${widget.pet.gender}, ${widget.pet.age} months old"),

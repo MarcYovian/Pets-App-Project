@@ -28,8 +28,8 @@ class _ChatScreenState extends State<ChatScreen> {
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
           widget.receiverUserId, _messageController.text);
-
       // clear the message controller after sending the message
+
       _messageController.clear();
     }
   }

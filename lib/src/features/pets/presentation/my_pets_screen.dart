@@ -13,22 +13,11 @@ class MyPetsScreen extends StatefulWidget {
 
 class _MyPetsScreenState extends State<MyPetsScreen> {
   final PetsService _petsService = PetsService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    const MyBottomNavigationBar(selectedIndex: 3),
-              ),
-            );
-          },
-          child: const Icon(Icons.arrow_back_ios_new_rounded),
-        ),
         title: const Center(
           child: Text("My Pets"),
         ),

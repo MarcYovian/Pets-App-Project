@@ -5,10 +5,8 @@ import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:pets_shop/src/routing/my_routes.dart';
 
 class MyBottomNavigationBar extends StatefulWidget {
-  final int selectedIndex;
-  const MyBottomNavigationBar({
+  MyBottomNavigationBar({
     Key? key,
-    required this.selectedIndex,
   }) : super(key: key);
 
   @override
@@ -17,12 +15,6 @@ class MyBottomNavigationBar extends StatefulWidget {
 
 class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   int selectedIndex = 0;
-
-  @override
-  void initState() {
-    selectedIndex = widget.selectedIndex;
-    super.initState();
-  }
 
   final pages = MyRoutes.pages;
 
