@@ -56,14 +56,15 @@ class _ChatListScreenState extends State<ChatListScreen> {
       if (_auth.currentUser!.email != data['email']) {
         return GestureDetector(
           onTap: () {
-            Navigator.pushNamed(
-              context,
-              chatScreen,
-              arguments: Chat(
-                receivedUserEmail: data['email'],
-                receiverUserId: data['uid'],
-              ),
-            );
+            Navigator.pushNamed(context, chatScreen, arguments: {
+              'receivedUserEmail': data['email'],
+              'receiverUserId': data['uid'],
+            }
+                // Chat(
+                //   receivedUserEmail: data['email'],
+                //   receiverUserId: data['uid'],
+                // ),
+                );
           },
           child: Container(
             margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),

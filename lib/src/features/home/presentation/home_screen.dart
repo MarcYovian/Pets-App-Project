@@ -120,7 +120,12 @@ class _HomeScreenState extends State<HomeScreen> {
         profile = ProfileModel.fromMap(dataUser.data() as Map<String, dynamic>);
       });
     } catch (e) {
-      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: Colors.green,
+        ),
+      );
     }
   }
 
@@ -135,7 +140,12 @@ class _HomeScreenState extends State<HomeScreen> {
       filterPetsByCategory(_selectedCategory);
       searchResultList();
     } catch (e) {
-      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: Colors.green,
+        ),
+      );
     }
   }
 
@@ -147,17 +157,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // if (_allDataPets.isEmpty || _allIdDataPets.isEmpty) {
-    //   return const Scaffold();
-    // }
-
-    print(_allSearchPetsData);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(
           profile?.fullName ?? "null",
-          style: TextStyle(),
         ),
         actions: [
           const Icon(Icons.notifications),
