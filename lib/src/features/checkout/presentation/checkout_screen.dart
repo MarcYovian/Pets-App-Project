@@ -266,6 +266,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                           status: CheckoutStatus.pending.name,
                                           buyTime: Timestamp.now(),
                                         );
+
+                                        // var price = checkout.price;
+                                        // print(price);
+                                        // // print(widget.profile.email);
+
+                                        // var doc = await FirebaseFirestore
+                                        //     .instance
+                                        //     .collection('saldo')
+                                        //     .doc(currentUser)
+                                        //     .get();
+                                        // var data = doc.data();
+                                        // var pengurangan =
+                                        //     double.parse(data!['price']) -
+                                        //         price;
+                                        // print(pengurangan);
                                         await CheckoutService()
                                             .sendCheckoutData(checkout);
                                         await CheckoutService()

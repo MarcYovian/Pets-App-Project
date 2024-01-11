@@ -84,6 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Text(
                           profile.email,
                         ),
+                        const Gap(10),
                       ],
                     ),
                   ],
@@ -108,22 +109,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const Gap(10),
 
-                    // Settings
-                    // OptionMenu(
-                    //   onTap: () {},
-                    //   iconData: Icons.settings,
-                    //   menuName: "Settings",
-                    // ),
-                    // const Gap(10),
-
-                    // Notifications
-                    // OptionMenu(
-                    //   onTap: () {},
-                    //   iconData: Icons.notifications,
-                    //   menuName: "Notifications",
-                    // ),
-                    // const Gap(10),
-
                     // My Pets
                     OptionMenu(
                       onTap: () {
@@ -145,10 +130,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: OptionMenu(
               onTap: () async {
                 if (!mounted) return;
-                final authService =
-                    Provider.of<AuthService>(context, listen: false);
-                await authService.signOut();
-                Navigator.pushNamed(context, authGate);
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("Konfirmasi Logout"),
+                      content: Text("Apakah anda yakin logout"),
+                      actions: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            "Cancel",
+                            style: TextStyle(color: Colors.pink),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () async {
+                            final authService = Provider.of<AuthService>(
+                                context,
+                                listen: false);
+                            await authService.signOut();
+                            Navigator.pushNamed(context, authGate);
+                          },
+                          child: const Text(
+                            "Yakin",
+                            style: TextStyle(color: Colors.pink),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
               iconData: Icons.logout_rounded,
               menuName: "Logout",

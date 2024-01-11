@@ -103,13 +103,15 @@ class _CreatePetsScreenState extends State<CreatePetsScreen> {
                               ],
                             ),
                           )
-                        : ClipRRect(
-                            borderRadius: BorderRadius.circular(8.0),
-                            child: Image.file(
-                              imageFile!,
-                              height: 200.0,
-                              width: 200.0,
-                              fit: BoxFit.cover,
+                        : Center(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image.file(
+                                imageFile!,
+                                height: 200.0,
+                                width: 200.0,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                   ),

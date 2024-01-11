@@ -21,7 +21,9 @@ class _ChatListScreenState extends State<ChatListScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade300,
       appBar: AppBar(
-        title: const Text("Chat Page"),
+        title: const Center(
+          child: Text("Chat Page"),
+        ),
         automaticallyImplyLeading: false,
       ),
       body: _buildUserList(),

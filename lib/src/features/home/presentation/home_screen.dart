@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:pets_shop/src/common_widgets/my_card.dart';
 import 'package:pets_shop/src/constants/route.dart';
 import 'package:pets_shop/src/features/home/application/home_service.dart';
-import 'package:pets_shop/src/features/pets/data/categories_repository.dart';
-import 'package:pets_shop/src/features/pets/data/pets_service.dart';
 import 'package:pets_shop/src/features/pets/domain/pets_model.dart';
 import 'package:pets_shop/src/features/pets/presentation/pet_details.dart';
 import 'package:pets_shop/src/features/profile/domain/profile_model.dart';
@@ -47,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     getClientStream();
     getPetStream();
-    Future.delayed(const Duration(milliseconds: 1000));
+    Future.delayed(const Duration(milliseconds: 5000));
     searchController.addListener(_onSearchChanged);
     super.initState();
   }
@@ -157,78 +154,82 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(
-          profile?.fullName ?? "null",
-        ),
-        actions: [
-          const Icon(Icons.notifications),
-          const Gap(10),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushNamed(context, myProfileScreen);
-            },
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(60),
-              child: networkImage(profile?.image ??
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"),
-            ),
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          title: Text(
+            profile?.fullName ?? "null",
           ),
-          const Gap(15),
-        ],
-        automaticallyImplyLeading: false,
-      ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          children: [
-            // Search Field
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    "Search For A Pet",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  )),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              child: TextField(
-                controller: searchController,
-                decoration: const InputDecoration(
-                  hintText: "Search",
-                ),
-              ),
-            ),
-
-            // Category
-            _buildCategoryList(),
-
-            // list view of pets
+          actions: [
+            const Icon(Icons.notifications),
             const Gap(10),
-            Expanded(
-              child: Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  scrollDirection: Axis.vertical,
-                  itemCount: _allSearchPetsData.length,
-                  itemBuilder: (context, index) {
-                    var petId = _allSearchIdPetsData[index];
-                    var pet = _allSearchPetsData[index];
-
-                    return _buildPetDataItem(petId, pet);
-                  },
-                ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, myProfileScreen);
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(60),
+                child: networkImage(profile?.image ??
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"),
               ),
             ),
+            const Gap(15),
           ],
+          automaticallyImplyLeading: false,
+        ),
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              // Search Field
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Search For A Pet",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    )),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: TextField(
+                  controller: searchController,
+                  decoration: const InputDecoration(
+                    hintText: "Search",
+                  ),
+                ),
+              ),
+
+              // Category
+              _buildCategoryList(),
+
+              // list view of pets
+              const Gap(10),
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  height: MediaQuery.of(context).size.height,
+                  width: MediaQuery.of(context).size.width,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: _allSearchPetsData.length,
+                    itemBuilder: (context, index) {
+                      var petId = _allSearchIdPetsData[index];
+                      var pet = _allSearchPetsData[index];
+
+                      return _buildPetDataItem(petId, pet);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

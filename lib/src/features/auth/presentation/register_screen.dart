@@ -73,7 +73,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     // Make sure the password doesn't meet the requirements
-    if (password.length < 8 ||
+    if (password.length < 2 ||
         !RegExp(r'[A-Z]').hasMatch(password) ||
         !RegExp(r'[a-z]').hasMatch(password) ||
         !RegExp(r'[0-9]').hasMatch(password)) {

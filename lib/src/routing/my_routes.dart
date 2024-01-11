@@ -3,7 +3,6 @@ import 'package:pets_shop/src/common_widgets/my_bottom_navbar.dart';
 import 'package:pets_shop/src/constants/route.dart';
 import 'package:pets_shop/src/features/auth/application/auth_gate.dart';
 import 'package:pets_shop/src/features/auth/application/loginOrRegister.dart';
-import 'package:pets_shop/src/features/auth/presentation/welcome_screen.dart';
 import 'package:pets_shop/src/features/chat/domain/chat_model.dart';
 import 'package:pets_shop/src/features/chat/presentation/chat_list_screen.dart';
 import 'package:pets_shop/src/features/chat/presentation/chat_screen.dart';
@@ -26,10 +25,6 @@ class MyRoutes {
   static Route<dynamic> generateRoute(RouteSettings setting) {
     final arg = setting.arguments as Map<String, dynamic>?;
     switch (setting.name) {
-      case welcomeScreen:
-        return MaterialPageRoute(
-          builder: (context) => const WelcomeScreen(),
-        );
       case authGate:
         return MaterialPageRoute(
           builder: (context) => const AuthGate(),
@@ -81,12 +76,6 @@ class MyRoutes {
         );
       default:
     }
-    return MaterialPageRoute(
-      builder: (context) => const Scaffold(
-        body: Center(
-          child: Text("no route defined"),
-        ),
-      ),
-    );
+    return MaterialPageRoute(builder: (context) => AuthGate());
   }
 }
